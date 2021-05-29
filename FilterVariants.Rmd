@@ -11,7 +11,7 @@ library(tidyverse)
 
 
 ```{r}
-InputData  <- read.table("C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.avinput", header=F, sep=" ", quote="",fill=T)
+InputData  <- read.table("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/Monogenic2.avinput", header=F, sep=" ", quote="",fill=T)
 
 ```
 
@@ -84,11 +84,11 @@ pathogenic <- InputData[logic_P & !logic_B & !logic_U & !logic_C & !logic_PR,]
 
 
 ```{r}
-write.table(pathogenic, file="C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.avinput", append=F, sep=" ", quote = F, row.names=F, col.names = F)
+write.table(pathogenic, file="C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/Monogenic3.avinput", append=F, sep=" ", quote = F, row.names=F, col.names = F)
 
 ```
 
 ```{bash}
-cd C:/Users/yoroi/OneDrive/Escritorio/
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/
 head Monogenic3.avinput
 ```

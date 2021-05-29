@@ -16,7 +16,7 @@ perl ../annovar/annotate_variation.pl  -out Monogenic3 --buildver hg38 Monogenic
 
 
 ```{bash}
-cd C:/Users/yoroi/OneDrive/Escritorio/
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered/
  
 head Monogenic3.variant_function
 
@@ -24,13 +24,13 @@ head Monogenic3.variant_function
 
 ```{bash}
 
-cd C:/Users/yoroi/OneDrive/Escritorio/
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered
 head -3 Monogenic3.exonic_variant_function
 
 ```
 
 ```{bash}
-cd C:/Users/yoroi/OneDrive/Escritorio/
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered
 head -3 Monogenic3.invalid_input
 ```
 
@@ -39,7 +39,8 @@ Variants were invalid cause the reference alleles were wrong due to duplications
 # Retrieve correct reference alleles
 
 ```{r}
-InputData  <- read.table("C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.invalid_input", header=F, sep=" ", quote="",fill=T)
+setwd("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/")
+InputData  <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.invalid_input", header=F, sep=" ", quote="",fill=T)
 
 #length(InputData$V1)
 
@@ -60,7 +61,7 @@ Invalid <- data.frame(Invalid)
 
 #length(Invalid[,1])
 
-write.table(Invalid, file="C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.simple_region", append=F, sep="", quote = F, row.names=F, col.names = F)
+write.table(Invalid, file="./SimpleRegion/Monogenic3.simple_region", append=F, sep="", quote = F, row.names=F, col.names = F)
 ```
 
 
@@ -79,7 +80,7 @@ perl ../annovar/retrieve_seq_from_fasta.pl -format simple -seqdir ../annovar/hum
 ```
 
 ```{bash}
-cd C:/Users/yoroi/OneDrive/Escritorio
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/SimpleRegion
 head Monogenic3.simple_region.fa
 
 ```
