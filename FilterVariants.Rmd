@@ -1,0 +1,94 @@
+---
+title: "FilterV"
+author: "Edgar Leal"
+date: "25/5/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+InputData  <- read.table("C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.avinput", header=F, sep=" ", quote="",fill=T)
+
+```
+
+
+
+```{r}
+
+head(InputData)
+
+#unique(InputData$V9)
+
+
+InputData <- InputData[InputData$V9!="Multifactorial,"&
+                         InputData$V9!="Isolated",]
+
+
+#unique(InputData$V9)
+#length(InputData$V1)
+#Nos quedamos con 24530 variantes
+
+```
+
+```{r}
+#unique(InputData$V12)
+```
+
+```{r}
+
+#Filtrar las que sean pathogenic
+
+text_p <- '(^pathogenic,|,pathogenic$|^pathogenic$|,pathogenic,)'
+logic_P <- grepl(text_p,InputData$V12)
+
+
+
+#Filtrar las que no sean benign o likely benign
+
+text_b <- 'benign'
+logic_B <- grepl(text_b, InputData$V12)
+
+#Filtrat las que no sean uncertain-significance
+
+text_u <- 'uncertain'
+logic_U <- grepl(text_u, InputData$V12)
+
+#Filtrar las que no sean conflicting-interpretations of pathogenicity
+
+text_c <- 'conflicting'
+logic_C <- grepl(text_c, InputData$V12)
+
+
+#Filtrar las que no sean protective
+
+text_pr <- 'protective'
+logic_PR <- grepl(text_pr, InputData$V12)
+
+
+pathogenic <- InputData[logic_P & !logic_B & !logic_U & !logic_C & !logic_PR,]
+
+#length(pathogenic$V12)
+#Al final son 18483 variantes
+
+#unique(pathogenic$V12)
+
+
+
+
+
+```
+
+
+```{r}
+write.table(pathogenic, file="C:/Users/yoroi/OneDrive/Escritorio/Monogenic3.avinput", append=F, sep=" ", quote = F, row.names=F, col.names = F)
+
+```
+
+```{bash}
+cd C:/Users/yoroi/OneDrive/Escritorio/
+head Monogenic3.avinput
+```
