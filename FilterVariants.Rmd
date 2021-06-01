@@ -84,6 +84,28 @@ pathogenic <- InputData[logic_P & !logic_B & !logic_U & !logic_C & !logic_PR,]
 
 
 ```{r}
+syn <- paste(paste(rep("chr",times=length(pathogenic$V1)), 
+                 paste(pathogenic[,1], pathogenic[,2], sep = ":"), 
+                 sep =""), pathogenic[,3], sep = "-")
+
+df <- as.data.frame((table(syn)))
+
+for (i in df[df$Freq!=1,1]){
+  index <- which(syn == i)
+    for (k in 1:length(index)){
+      if (k!= 1){
+        pathogenic[index[k],] <- NA
+      }
+    }
+}
+pathogenic <- na.omit(pathogenic)
+
+#length(pathogenic$V1)
+#Nos quedamos con 15291 variantes
+```
+
+
+```{r}
 write.table(pathogenic, file="C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/Monogenic3.avinput", append=F, sep=" ", quote = F, row.names=F, col.names = F)
 
 ```
