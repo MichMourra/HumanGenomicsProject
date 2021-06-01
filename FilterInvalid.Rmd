@@ -43,6 +43,7 @@ setwd("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/")
 InputData  <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.invalid_input", header=F, sep=" ", quote="",fill=T)
 
 #length(InputData$V1)
+#2239 variantes
 
 ```
 
@@ -76,10 +77,12 @@ perl ../annotate_variation.pl -downdb seq ./hg38seq/ -build hg38
 #Retrieve the sequences for each region
 
 perl ../annovar/retrieve_seq_from_fasta.pl -format simple -seqdir ../annovar/humandb/hg38seq/chroms Monogenic3.simple_region
+#2156 variantes de 2239 se pudieron recuperar
 
 ```
 
 ```{bash}
+
 cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/SimpleRegion
 head Monogenic3.simple_region.fa
 
