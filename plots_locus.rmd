@@ -1,0 +1,253 @@
+---
+title: "Plots locus"
+author: "Athena Tamayo Luisce"
+date: "3/6/2021"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+setwd("/home/athena/Escritorio/CCG/4toSemestre/GenoHumana/Proyecto")
+data1 <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.variant_function", sep = "\t", header = FALSE)
+data2 <- read.table("./ANNOVAR_hg38_invalid_filtered/Monogenic3_1.variant_function", sep = "\t", header = FALSE)
+exons1 <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.exonic_variant_function", sep = "\t", header = FALSE)
+exons2 <- read.table("./ANNOVAR_hg38_invalid_filtered/Monogenic3_1.exonic_variant_function", sep = "\t", header = FALSE)
+```
+
+Merge data1/data2 and exon1/exon2
+```{r}
+data <- left_join(data1, data2)
+exons <- left_join(exons1, exons2)
+```
+```{r}
+dim(data)
+dim(exons)
+```
+```{r}
+# length difference between the variant a locus files 
+17582 - 13052
+# Exons 
+15755 - 11698
+```
+
+```{r}
+head(exons)
+```
+```{r}
+head(exons)
+```
+
+Change column names 
+```{r}
+colnames(data) <- c("location", "gene", "description")
+colnames(exons) <- c("line", "mutation", "gene", "description")
+```
+
+Create dataframe of frequencies 
+```{r}
+freq <- as.data.frame(table(data$location))
+# add the percentages 
+freq$Perc <- round((freq$Freq)/sum(freq$Freq)*100, 2)
+```
+
+Plot the frequency of non coding and coding regions with variants associated with monogenic diseases
+```{r}
+regions <- data.frame(region = c("coding", "non-coding"), 
+                      freq = c(sum(freq$Freq[c(1, 2, 5, 6)]), 
+                               sum(freq$Freq[c(3, 4, 7, 8, 9, 10, 11)])))
+regions$perc <- round(regions$freq/sum(freq$Freq)*100, 2)
+```
+
+```{r}
+ggplot(regions, aes(x = region, y = freq, fill = region)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of mutations associated with monogenic diseases located 
+                            in coding and non-coding regions", x = NULL, y = "Frequency") +
+  scale_fill_discrete(name = "Genomic region") +
+  geom_text(aes(label = paste(perc, "%", sep = "")), vjust = -0.2)
+```
+
+Plot the frequency of mutations associated with monogenic diseases located in different genomic regions.
+```{r}
+ggplot(freq, aes(x = Var1, y = log(Freq), fill = Var1)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of mutations associated with monogenic diseases located 
+                            in different genomic regions", x = NULL, y = "log(frequency)") +
+  scale_fill_discrete(name = "Genomic location") +
+  geom_text(aes(label = paste(Perc, "%", sep = "")), vjust = -0.2) 
+```
+Label info: https://annovar.openbioinformatics.org/en/latest/user-guide/gene/
+
+Plot the frequency of the types of the type of mutations associated with monogenic diseases in exons 
+```{r}
+mut <- as.data.frame(table(exons$mutation))
+mut$Perc <- round((mut$Freq)/sum(mut$Freq)*100, 2)
+```
+
+```{r}
+ggplot(mut, aes(x = Var1, y = log(Freq), fill = Var1)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of the type of mutations associated with monogenic 
+                             diseases in exons",
+       x = NULL, y = "log(frequency)") +
+  scale_fill_discrete(name = "Type of mutations") +
+  geom_text(aes(label = paste(Perc, "%", sep = "")), vjust = -0.2) +
+  ylim(0, 10)
+```
+
+Split the description of the variants 
+```{r}
+elements <- strsplit(data$description, split = "[,]")
+```
+
+Plot the type of inheritance of the variants 
+```{r}
+inheritance <- vector()
+for (i in 1:13052){
+  inheritance <- c(inheritance, elements[[i]][3])
+}
+
+inheritance <- as.data.frame(table(inheritance))
+inheritance$Perc <- round((inheritance$Freq)/sum(inheritance$Freq)*100, 2)
+```
+
+```{r}
+ggplot(inheritance, aes(x = inheritance, y = log(Freq), fill = inheritance)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of the type of inheritance of the variants",
+       x = NULL, y = "log(frequency)") +
+  scale_fill_discrete(name = "Type of inheritance") +
+  geom_text(aes(label = paste(Perc, "%", sep = "")), vjust = -0.2) +
+  ylim(0, 10)
+```
+
+Plot the mutations associated with monogenic diseases in all the genomic region
+```{r}
+# Get the mutations associated with monogenic diseases in all the genomic regions 
+mutations <- vector()
+for (i in 1:13052){
+  mutations <- c(mutations, elements[[i]][2])
+}
+```
+
+```{r}
+mutations <- as.data.frame(table(mutations))
+mutations$Perc <- round((mutations$Freq)/sum(mutations$Freq)*100, 2)
+```
+
+```{r}
+ggplot(mutations, aes(x = mutations, y = Freq, fill = mutations)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of the type of mutations associated with monogenic 
+                     diseases in all the genomic regions",
+       x = NULL, y = "Frequency") +
+  scale_fill_discrete(name = "Type of mutations") +
+  geom_text(aes(label = paste(Perc, "%", sep = "")), vjust = -0.2)
+```
+
+Plot the number of diseases associated with a number of variants
+```{r}
+disease <- vector()
+for (i in 1:13052){
+  disease <- c(disease, elements[[i]][4])
+}
+```
+
+```{r}
+disease <- as.data.frame(table(disease))
+```
+
+```{r}
+ggplot(disease, aes(x = Freq)) + 
+  geom_histogram(binwidth = 1, color = "black", fill = "darkseagreen1") +
+  labs(title = "Number of diseases associated with a number of variants",
+       x = "Number of variants", y = "Number of diseases") +
+  theme(plot.title = element_text(face = "bold")) +
+  scale_x_continuous(breaks = seq(0, 30, 2), limits = c(0, 30))
+```
+```{r}
+summary(disease$Freq)
+```
+
+```{r}
+table(disease$Freq)
+```
+```{r}
+# Obtain the mim number of the disease that is associated with 166 variants 
+print(which(disease$Freq == 75))
+disease$disease[306]
+```
+Plot the distribution of the mutations on each chromosomes
+```{r}
+desc <- strsplit(data$description, split = "[ ]")
+chrs <- vector()
+for (i in 1:13052){
+   chrs <- c(chrs, desc[[i]][1])
+}
+
+chrs <- as.data.frame(table(chrs))
+order <- order(c(1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,3,4,5,6,7,8,9,23,24))
+```
+
+```{r}
+chrs <- data.frame(chrs = chrs$chrs[order], Freq = chrs$Freq[order])
+chrs$chrs <- factor(chrs$chrs, unique(chrs$chrs))
+```
+
+```{r}
+palette <- grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)]
+colors <- sample(palette, 24, replace = FALSE)
+
+ggplot(chrs, aes(x = "", y = Freq, fill = chrs)) +
+  geom_bar(stat = "identity", color='black') +
+  coord_polar("y", start = 0) +
+  theme(axis.text = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.grid  = element_blank(),
+        plot.title = element_text(face = "bold"),
+        legend.title =  element_text(face = "bold"))+
+  scale_fill_discrete(name = "Chromosomes", type = colors) +
+  labs(title = "Distribution of the mutations on each chromosome", x = "", y = "") 
+```
+
+```{r}
+chrs$Perc <- round(chrs$Freq/sum(chrs$Freq)*100, 2)
+```
+
+```{r}
+ggplot(chrs, aes(x = chrs, y = Freq, fill = chrs)) +
+  geom_bar(stat = "identity") +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x=element_blank(),
+        plot.title = element_text(face = "bold", hjust = 0.05),
+        legend.title =  element_text(face = "bold")) +
+  labs(title = "Frequency of mutations in each chromosome",
+       x = NULL, y = "Frequency") +
+  scale_fill_discrete(name = "  Type of\nmutations") +
+  geom_text(aes(label = paste(Perc, "%", sep = "")), vjust = -0.2) +
+  ylim(c(0, 2000))
+```
