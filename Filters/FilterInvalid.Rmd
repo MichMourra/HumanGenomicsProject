@@ -1,0 +1,90 @@
+---
+title: "FilterInvalid"
+author: "Edgar Leal"
+date: "27/5/2021"
+output: html_document
+---
+# Anotación de variantes filtradas
+
+
+```{bash}
+#This code was run from another server
+#Anotación hg38 con variantes filtradas patogénicas y herencia monogénica con FilterVariants.R
+
+perl ../annovar/annotate_variation.pl  -out Monogenic3 --buildver hg38 Monogenic3.avinput ../annovar/humandb
+```
+
+
+```{bash}
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered/
+ 
+head Monogenic3.variant_function
+
+```
+
+```{bash}
+
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered
+head -3 Monogenic3.exonic_variant_function
+
+```
+
+```{bash}
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/ANNOVAR_hg38_filtered
+head -3 Monogenic3.invalid_input
+```
+
+Variants were invalid cause the reference alleles were wrong due to duplications. 
+
+# Retrieve correct reference alleles
+
+```{r}
+setwd("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/")
+InputData  <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.invalid_input", header=F, sep=" ", quote="",fill=T)
+
+#length(InputData$V1)
+#2239 variantes
+
+```
+
+
+```{r}
+head(InputData[,1:3])
+
+#Put the regions in simple_format required for annovar (retrieve_seq_from_fasta)
+
+Invalid <- paste(paste(rep("chr",times=length(InputData[,1])), 
+                 paste(InputData[,1], InputData[,2], sep = ":"), 
+                 sep =""), InputData[,3], sep = "-")
+#head(Invalid)
+
+Invalid <- data.frame(Invalid)
+
+#length(Invalid[,1])
+
+write.table(Invalid, file="./SimpleRegion/Monogenic3.simple_region", append=F, sep="", quote = F, row.names=F, col.names = F)
+```
+
+
+```{bash}
+#These commands were run form another server
+
+#Dowload fasta files for each chromosome in hg38 build
+
+perl ../annotate_variation.pl -downdb seq ./hg38seq/ -build hg38
+
+
+#Retrieve the sequences for each region
+
+perl ../annovar/retrieve_seq_from_fasta.pl -format simple -seqdir ../annovar/humandb/hg38seq/chroms Monogenic3.simple_region
+#2156 variantes de 2239 se pudieron recuperar
+
+```
+
+```{bash}
+
+cd C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/SimpleRegion
+head Monogenic3.simple_region.fa
+
+```
+
