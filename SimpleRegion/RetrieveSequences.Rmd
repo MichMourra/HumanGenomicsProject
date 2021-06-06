@@ -1,0 +1,95 @@
+---
+title: "Untitled"
+author: "Edgar Leal"
+date: "30/5/2021"
+output: html_document
+---
+```{r}
+#install.packages("seqinr")
+```
+
+```{r}
+library("seqinr")
+library("tidyverse")
+```
+
+```{r}
+setwd("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/SimpleRegion")
+InputFasta <- read.fasta(file = "Monogenic3.simple_region.fa", seqtype = "DNA", as.string = T, whole.header = F)
+```
+
+```{r}
+#head(InputFasta)
+
+names <- names(InputFasta)
+
+seq <- sapply(InputFasta,FUN = function(seq){
+  return(seq)
+})
+
+seq <- as.data.frame(seq)
+seq$names <- names
+
+head(seq)
+
+```
+
+
+
+```{r}
+setwd("C:/Users/yoroi/OneDrive/Escritorio/GenomicaHumana/HumanGenomicsProject/")
+InputData  <- read.table("./ANNOVAR_hg38_filtered/Monogenic3.invalid_input", header=F, sep=" ", quote="",fill=T)
+
+#length(InputData$V1)
+#2239
+head(InputData)
+```
+
+```{r}
+#Put the regions in simple_format required for annovar (retrieve_seq_from_fasta)
+
+Invalid <- paste(paste(rep("chr",times=length(InputData[,1])), 
+                 paste(InputData[,1], InputData[,2], sep = ":"), 
+                 sep =""), InputData[,3], sep = "-")
+
+
+
+l <- sapply(seq$names,FUN = function(pattern){
+  logic <- grep(pattern,Invalid)
+  
+  return(logic)
+})
+#head(l)
+
+index <- sapply(l,FUN=function(i){
+  return(i)
+})
+df <- data.frame(seq$seq, index)
+#head(df)
+
+for(j in 1:length(df$index)){
+  InputData$V4[df$index[j]] <- df$seq.seq[j] 
+}
+#head(InputData)
+
+
+```
+
+
+```{r}
+index2 <- 1:length(df$index)
+invalid <- setdiff(index2,df$index)
+
+
+for (k in invalid){
+  InputData[k,] <- NA 
+}
+
+InputData <- na.omit(InputData)
+
+```
+
+```{r}
+write.table(InputData, file="../Invalid.avinput", append=F, sep=" ", quote = F, row.names=F, col.names = F)
+```
+
