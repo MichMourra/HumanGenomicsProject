@@ -52,7 +52,7 @@ logic_P <- grepl(text_p,InputData$V12)
 text_b <- 'benign'
 logic_B <- grepl(text_b, InputData$V12)
 
-#Filtrat las que no sean uncertain-significance
+#Filtrar las que no sean uncertain-significance
 
 text_u <- 'uncertain'
 logic_U <- grepl(text_u, InputData$V12)
