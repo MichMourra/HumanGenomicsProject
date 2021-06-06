@@ -4,8 +4,7 @@ author: "Edgar Leal"
 date: "27/5/2021"
 output: html_document
 ---
-# Anotación de variantes filtradas
-
+# Filtrated Variants Annotation 
 
 ```{bash}
 #This code was run from another server
