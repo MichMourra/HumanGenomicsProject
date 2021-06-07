@@ -44,3 +44,5 @@ avinput format, values of .variant_function and .exonic_variant_function files f
 ### Contacts
 jlealriv@lcg.unam.mx
 cmourra@lcg.unam.mx
+atamayo@lcg.unam.mx
+azagal@lcg.unam.mx
