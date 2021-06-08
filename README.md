@@ -32,6 +32,7 @@ Outputs of the annotation of Monogenic3.avinput file
 Outputs of the annotation of Invalid.avinput
 
 ## Plots
+In plots_variants.rmd you can find the code we use to visualize and analyze the variant data and to compare it directly to the loci data. The difference between these two data sets is that the loci data set contains only one variant per mutated position, while the variant data set contains all the variants that were found at each position. plots_loci.rmd was used to particularly visualize the loci data.
 
 ## Further Info
 See the Results in PDF for further information about the format of the files.
