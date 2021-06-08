@@ -37,7 +37,7 @@ In plots_variants.rmd you can find the code we use to visualize and analyze the 
 ## Further Info
 See the Results in PDF for further information about the format of the files.
 
-Also see 
+See also 
 
 avinput format, values of .variant_function and .exonic_variant_function files from annotate_variation.pl of [annovar](https://annovar.openbioinformatics.org/en/latest/user-guide/gene/)
 .simple_region format and .simple_region.fa [retrieve_seq_from_fasta.pl](https://annovar.openbioinformatics.org/en/latest/misc/accessory/#retrieve_seq_from_fasta-retrieve-nucleotideprotein-sequences)
